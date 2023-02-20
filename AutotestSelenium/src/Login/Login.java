@@ -1,24 +1,36 @@
 package Login;
 
+import java.io.IOException;
+
 import java.awt.Image;
 import java.util.concurrent.TimeUnit;
 
+import org.bouncycastle.asn1.BEROctetStringGenerator;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-
 import org.openqa.selenium.ie.InternetExplorerDriver;
-import org.testng.Assert;
-import org.testng.annotations.Test;
-import org.testng.asserts.SoftAssert;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import io.github.bonigarcia.wdm.webdriver.WebDriverBrowser;
 
+import org.testng.Assert;
+import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
+
+import com.jayway.jsonpath.JsonPath;
+
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
+
+
+import java.io.File;
+
+//import account data
+
 
 public class Login {
 
@@ -27,7 +39,6 @@ SoftAssert soft;
 	
 	@BeforeClass
 	public void beforeClass() {
-		
 		soft 	= new SoftAssert();
 		
 		startBrowser("chrome");
@@ -51,19 +62,25 @@ SoftAssert soft;
         SleepInSecond(5);
 	}
 	
-	@Test
+	@Test()
 	// Testing for Login website
-	public void TC_01() {
+	public void TC_01() throws IOException {
+
+		File jsonFile = new File(System.getProperty("user.dir")+"/src/fixtures/account_GiayBom.json");
+		
+		Object myEmai = JsonPath.read(jsonFile, "informationAccount.Email");
+		Object myPassword = JsonPath.read(jsonFile, "$."+"informationAccount.Password");
+
 		//Click Login button
 		WebElement btn_logInElement = driver.findElement(By.linkText("Đăng nhập"));
 		btn_logInElement.click();
         
         // Information account
         WebElement customerEmainElement = driver.findElement(By.id("CustomerEmail"));
-        customerEmainElement.sendKeys("trinhtho277@gmail.com");
+        customerEmainElement.sendKeys(myEmai.toString());
         SleepInSecond(2);
         WebElement customerPasswordElement = driver.findElement(By.id("CustomerPassword"));
-        customerPasswordElement.sendKeys("@GBGiayBom");
+        customerPasswordElement.sendKeys(myPassword.toString());
         
 		// Click "Đăng nhập" button
         WebElement btn_singInElement = driver.findElement(By.xpath("//*[@id=\"customer_login\"]/p[1]/input"));
@@ -72,9 +89,20 @@ SoftAssert soft;
 
 	}
 	
+	public void jsonReader()  throws IOException {
+		File jsonFile = new File(System.getProperty("user.dir")+"/src/fixtures/account_GiayBom.json");
+		
+		
+	}
 	@Test
 	//Update infomation
-	public void TC_02() {
+	public void TC_02() throws IOException {
+		File  jsonFile = new File(System.getProperty("user.dir")+"/src/fixtures/account_GiayBom.json");
+		Object addressCompany = JsonPath.read(jsonFile, "$."+"informationAccount.AddressCompany");
+		Object AddressAddress1 = JsonPath.read(jsonFile, "$."+"informationAccount.AddressAddress1");
+		Object AddressCity = JsonPath.read(jsonFile, "$."+"informationAccount.AddressCity");
+		
+		
 		//Click on "Xem địa chỉ"
 		WebElement a_Address = driver.findElement(By.xpath("//*[@id=\"page-wrapper\"]/div/div/div/div[2]/p[2]/a"));
 		a_Address.click();
@@ -87,18 +115,17 @@ SoftAssert soft;
 		//Edit Company name
 		WebElement input_addressCompany = driver.findElement(By.id("AddressCompany_1122743388"));
 		input_addressCompany.clear();
-		input_addressCompany.sendKeys("CMC Global");
+		input_addressCompany.sendKeys(addressCompany.toString());
 		
 		//Edit address 1
 		WebElement input_address1 = driver.findElement(By.id("AddressAddress1_1122743388"));
 		input_address1.clear();
-		input_address1.sendKeys("47/8 Nguyễn Văn Săng, P.Tân Sơn Nhì, Q.Tân Phú");
-		
+		input_address1.sendKeys(AddressAddress1.toString());
 		
 		//Edit addtess city
 		WebElement input_addressCity = driver.findElement(By.id("AddressCity_1122743388"));
 		input_addressCity.clear();
-		input_addressCity.sendKeys("Hồ Chí Minh");
+		input_addressCity.sendKeys(AddressCity.toString());
 		
 		
 		//address[default]
@@ -111,10 +138,6 @@ SoftAssert soft;
 		
 		SleepInSecond(5);
 	}
-	
-	
-	//Orther product
-	//Click on "NEW 2022"
 	
 	
 	@AfterClass
