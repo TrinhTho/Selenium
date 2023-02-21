@@ -7,6 +7,8 @@
 		"AddressCompany": "CMC Global",
 		"AddressAddress1": "47/8 Nguyễn Văn Săng, P.Tân Sơn Nhì, Q.Tân Phú",
 		"AddressCity": "Hồ Chí Minh",
+		"AddressDistrict":"Tân Phú",
+		"AddressWard":"Phường Tân Sơn Nhì",
 		"AddressPhone": "0349551077"
 	}
 }
